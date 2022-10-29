@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react"
 
-export default function App() {
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+
+import { AuthProvider } from "../contexts/AuthContext";
+import Chats from "./Chats"
+import Login from "./Login"
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <div style={{ fontFamily: 'Avenir' }}>
+      <Router>
+        <AuthProvider> 
+          <Switch>
+             <Route path="/chats" component={Chats} />
+            <Route path="/" component={Login} /> 
+          </Switch>
+        </AuthProvider> 
+      </Router>
+    </div>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
