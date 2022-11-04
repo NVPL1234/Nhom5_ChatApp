@@ -1,24 +1,45 @@
-import React from "react"
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useChatClient } from './useChatClient';
+import { AppProvider } from "./AppContext";
+import {
+  OverlayProvider
+} from 'stream-chat-react-native'; // Or stream-chat-expo
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+const Stack = createStackNavigator();
 
-import { AuthProvider } from "../contexts/AuthContext";
-import Chats from "./Chats"
-import Login from "./Login"
+const HomeScreen = () => <Text>Home Screen</Text>;
 
-function App() {
+const NavigationStack = () => {
+  const { clientIsReady } = useChatClient();
+
+  if (!clientIsReady) {
+    return <Text>Loading chat ...</Text>
+  }
+
   return (
-    <div style={{ fontFamily: 'Avenir' }}>
-      <Router>
-        <AuthProvider> 
-          <Switch>
-             <Route path="/chats" component={Chats} />
-            <Route path="/" component={Login} /> 
-          </Switch>
-        </AuthProvider> 
-      </Router>
-    </div>
-  )
-}
+    <OverlayProvider>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </OverlayProvider>
+  );
+};
 
-export default App
+export default () => {
+  return (
+    <AppProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <NavigationContainer>
+            <NavigationStack />
+          </NavigationContainer>
+        </SafeAreaView>
+      </GestureHandlerRootView>
+    </AppProvider>
+  );
+};
